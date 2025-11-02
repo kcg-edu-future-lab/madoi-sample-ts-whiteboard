@@ -53,5 +53,11 @@ npm i
 devコマンドを実行すると、ブラウザが起動し、ホワイトボードアプリケーションが表示されます。
 
 ```bash
-npm run dev
+npm run serve
+```
+
+静的ビルドを行うには、buildコマンドを実行してください。
+
+```bash
+npm run build
 ```
