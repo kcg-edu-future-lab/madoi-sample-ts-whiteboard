@@ -1,7 +1,8 @@
-import { Madoi, ShareClass, Share, GetState, SetState } from "./madoi/madoi";
+import { Madoi, GetState, SetState, ClassName, Distributed, ChangeState } from "madoi-client";
+import { madoiKey, madoiUrl } from "./keys";
 
 window.addEventListener("load", function () {
-    const m = new Madoi(`wss://fungo.kcg.edu/madoi-20211003/rooms/whiteboard-o3id4alskdjj`);
+    const m = new Madoi(`${madoiUrl}/whiteboard-o3id4alskdjj`, madoiKey);
     const wb = new WhiteBoard("#whiteboard");
     m.register(wb);
 });
@@ -12,7 +13,7 @@ interface Drawing{
     size: number, color: string
 }
 
-@ShareClass({className: "WhiteBoard"})
+@ClassName("WhiteBoard")
 export class WhiteBoard {
     private boardElm: HTMLElement;
     private colorInput: HTMLInputElement;
@@ -58,7 +59,8 @@ export class WhiteBoard {
         this.canvas.oncontextmenu = () => false;
     }
 
-    @Share({maxLog: 100})
+    @Distributed()
+    @ChangeState()
     draw(prevX: number, prevY: number, x: number, y: number, size: number, color: string) {
         if(this.loading){
             // 画像がロード中の場合は描画を後回しにする
@@ -76,7 +78,7 @@ export class WhiteBoard {
         }
     }
 
-    @GetState({maxInterval: 10000, maxUpdates: 100})
+    @GetState()
     getState(): string {
         return this.canvas.toDataURL("image/png");
     }
